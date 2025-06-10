@@ -48,3 +48,22 @@ def get_product(product_id: int, db: Session = Depends(get_db), _: dict = Depend
     return product
 
 
+# @router.put("/{product_id}", response_model=ProductResponse)
+# def update_product(product_id: int, data: ProductUpdate, db: Session = Depends(get_db), _: dict = Depends(require_admin)):
+#     product = db.query(Product).get(product_id)
+#     if not product:
+#         raise HTTPException(status_code=404, detail="Product not found")
+#     for field, value in data.dict().items():
+#         setattr(product, field, value)
+#     db.commit()
+#     db.refresh(product)
+#     return product
+
+@router.delete("/products/{product_id}")
+def delete_product(product_id: int, db: Session = Depends(get_db), _: dict = Depends(require_admin)):
+    product = db.query(Product).get(product_id)
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    db.delete(product)
+    db.commit()
+    return create_response(data={"detail": "Product deleted"})
