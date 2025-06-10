@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
 from app.core.database import SessionLocal
-from app.auth.schemas import SignupSchema, LoginSchema
-from app.auth.utils import hash_password, verify_password, create_access_token, create_refresh_token
+from app.auth.schemas import SignupSchema, LoginSchema, ResetPasswordSchema
+from app.auth.utils import hash_password, verify_password, create_access_token, create_refresh_token, verify_token
 from app.auth.models import User
 from app.utils.response import create_response
+from jose import JWTError
+from typing import Optional
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -49,3 +51,31 @@ def signin(payload: LoginSchema, db: Session = Depends(get_db)):
     refresh_token = create_refresh_token(data={"sub": user.email})
     return create_response(data={"access_token": access_token, "refresh_token": refresh_token})
     
+@router.post("/reset-password")
+def reset_password(
+    payload: ResetPasswordSchema,
+    authorization: Optional[str] = Header(None),
+    db: Session = Depends(get_db)
+):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid or missing Authorization header")
+
+    token = authorization.split(" ")[1]
+
+    try:
+        payload_data = verify_token(token)
+        user_email = payload_data.get("sub")
+        if not user_email:
+            raise HTTPException(status_code=400, detail="Invalid token")
+
+        user = db.query(User).filter(User.email == user_email).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        user.hashed_password = hash_password(payload.new_password)
+        db.commit()
+
+        return create_response(data={"message": "Password reset successfully"})
+
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Token is invalid or expired")
