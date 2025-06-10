@@ -94,3 +94,6 @@ venv.bak/
 .mypy_cache/
 
 .idea/*
+
+logs/
+logs/logs.txt

@@ -21,6 +21,9 @@ def get_db():
 def health_check():
     return create_response(data={"message": "Health Check is done."})
 
+
+# ###################### USER MANAGEMENT ROUTES ######################
+
 @router.post("/signup")
 def signup(payload: SignupSchema, db: Session = Depends(get_db)):
     # check if user exists
@@ -47,8 +50,8 @@ def signin(payload: LoginSchema, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     if not verify_password(payload.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect password")
-    access_token = create_access_token(data={"sub": user.email})
-    refresh_token = create_refresh_token(data={"sub": user.email})
+    access_token = create_access_token(data={"sub": user.email, "role": user.role.value})
+    refresh_token = create_refresh_token(data={"sub": user.email, "role": user.role.value})
     return create_response(data={"access_token": access_token, "refresh_token": refresh_token})
     
 @router.post("/reset-password")
@@ -89,7 +92,7 @@ def forgot_password(request: ForgotPasswordRequestSchema, db: Session = Depends(
             detail="User with this email does not exist."
         )
 
-    token = create_reset_token({"sub": user.email})
+    token = create_reset_token({"sub": user.email, "role": user.role.value})
     send_reset_email(to_email=user.email, token=token)
     
-    return create_response(data={"message": "Password reset link sent to your email."})       
+    return create_response(data={"message": "Password reset link sent to your email."})  
