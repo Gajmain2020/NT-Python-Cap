@@ -1,0 +1,5 @@
+2025-06-10 12:35:40,927 - ERROR - HTTPException: Not Found | Status Code: 404 | Path: /admin/prodcts/4
+2025-06-10 12:38:04,285 - ERROR - HTTPException: Not Found | Status Code: 404 | Path: /pro
+2025-06-10 12:38:27,944 - ERROR - HTTPException: Not Found | Status Code: 404 | Path: /public_product_health_check
+2025-06-10 12:47:18,974 - ERROR - HTTPException: Not Found | Status Code: 404 | Path: /products/search/item
+2025-06-10 12:49:01,146 - ERROR - HTTPException: Product not found | Status Code: 404 | Path: /products/10
