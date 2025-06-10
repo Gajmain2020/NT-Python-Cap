@@ -13,3 +13,6 @@ class LoginSchema(BaseModel):
 
 class ResetPasswordSchema(BaseModel):
     new_password: str
+
+class ForgotPasswordRequestSchema(BaseModel):
+    email: EmailStr

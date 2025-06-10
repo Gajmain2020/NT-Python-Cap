@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, Header
+from fastapi import APIRouter, Depends, HTTPException, Header, status
 from sqlalchemy.orm import Session
 from app.core.database import SessionLocal
-from app.auth.schemas import SignupSchema, LoginSchema, ResetPasswordSchema
-from app.auth.utils import hash_password, verify_password, create_access_token, create_refresh_token, verify_token
+from app.auth.schemas import SignupSchema, LoginSchema, ResetPasswordSchema, ForgotPasswordRequestSchema
+from app.auth.utils import hash_password, verify_password, create_access_token, create_refresh_token, verify_token, create_reset_token, send_reset_email
 from app.auth.models import User
 from app.utils.response import create_response
 from jose import JWTError
@@ -79,3 +79,17 @@ def reset_password(
 
     except JWTError:
         raise HTTPException(status_code=401, detail="Token is invalid or expired")
+
+@router.post("/forgot-password")
+def forgot_password(request: ForgotPasswordRequestSchema, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == request.email).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User with this email does not exist."
+        )
+
+    token = create_reset_token({"sub": user.email})
+    send_reset_email(to_email=user.email, token=token)
+    
+    return create_response(data={"message": "Password reset link sent to your email."})       
