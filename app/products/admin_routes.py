@@ -2,7 +2,7 @@ from fastapi import APIRouter,Depends,HTTPException
 from app.utils.response import create_response
 from sqlalchemy.orm import Session
 from app.core.database import SessionLocal
-from app.products.schemas import ProductCreate, ProductResponse
+from app.products.schemas import ProductCreate, ProductResponse,ProductUpdate
 from app.products.models import Product
 from app.auth.dependencies import require_admin
 router = APIRouter(prefix="/admin", tags=["Admin"])
@@ -47,18 +47,6 @@ def get_product(product_id: int, db: Session = Depends(get_db), _: dict = Depend
         raise HTTPException(status_code=404, detail="Product not found")
     return product
 
-
-# @router.put("/{product_id}", response_model=ProductResponse)
-# def update_product(product_id: int, data: ProductUpdate, db: Session = Depends(get_db), _: dict = Depends(require_admin)):
-#     product = db.query(Product).get(product_id)
-#     if not product:
-#         raise HTTPException(status_code=404, detail="Product not found")
-#     for field, value in data.dict().items():
-#         setattr(product, field, value)
-#     db.commit()
-#     db.refresh(product)
-#     return product
-
 @router.delete("/products/{product_id}")
 def delete_product(product_id: int, db: Session = Depends(get_db), _: dict = Depends(require_admin)):
     product = db.query(Product).get(product_id)
@@ -67,3 +55,15 @@ def delete_product(product_id: int, db: Session = Depends(get_db), _: dict = Dep
     db.delete(product)
     db.commit()
     return create_response(data={"detail": "Product deleted"})
+
+@router.put("/products/{product_id}", response_model=ProductResponse)
+def update_product(product_id: int, data: ProductUpdate, db: Session = Depends(get_db), _: dict = Depends(require_admin)):
+    product = db.query(Product).get(product_id)
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    for field, value in data.model_dump(exclude_unset=True).items():
+        setattr(product, field, value)
+    db.commit()
+    db.refresh(product)
+    response_model = ProductResponse.model_validate(product, from_attributes=True)
+    return create_response(data=response_model.model_dump())
