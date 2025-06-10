@@ -4,6 +4,8 @@ from app.utils.exception_handlers import http_exception_handler, validation_exce
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.auth import routes as auth_routes
+from app.products import public_routes as public_routes
+from app.products import admin_routes as admin_routes
 from app.core.database import engine, Base
 
 Base.metadata.create_all(bind=engine)
@@ -18,3 +20,5 @@ app.add_exception_handler(StarletteHTTPException, http_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)    
 
 app.include_router(auth_routes.router)
+app.include_router(public_routes.router)
+app.include_router(admin_routes.router)
