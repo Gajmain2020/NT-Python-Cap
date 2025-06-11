@@ -7,6 +7,7 @@ from app.auth import routes as auth_routes
 from app.products import public_routes as public_routes
 from app.products import admin_routes as admin_routes
 from app.cart import routes as cart_routes
+from app.orders import routes as order_routes
 from app.core.database import engine, Base
 
 Base.metadata.create_all(bind=engine)
@@ -25,3 +26,4 @@ app.include_router(auth_routes.router)
 app.include_router(public_routes.router)
 app.include_router(admin_routes.router)
 app.include_router(cart_routes.router) 
+app.include_router(order_routes.router)
