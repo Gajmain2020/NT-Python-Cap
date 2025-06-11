@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.core.database import SessionLocal
 from app.cart.models import Cart
 from app.products.models import Product
-from app.cart.schemas import AddToCart
+from app.cart.schemas import AddToCart, UpdateCartItem
 from app.utils.response import create_response
 from app.auth.dependencies import get_current_user
 
@@ -80,3 +80,32 @@ def remove_from_cart(product_id: int, db: Session = Depends(get_db), user: dict 
     db.delete(item)
     db.commit()
     return create_response(data={"detail": "Item removed from cart"})
+
+#UPDATE ITEM CART QUANTITY
+@router.patch("/{product_id}")
+def update_quantity(product_id: int, data: UpdateCartItem, db: Session = Depends(get_db), user: dict = Depends(get_current_user)):
+    item = db.query(Cart).filter_by(user_id=user["id"], product_id=product_id).first()
+    product = db.query(Product).get(product_id)
+
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    if item:
+        new_quantity = item.quantity + data.quantity
+        if new_quantity > product.stock:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Only {product.stock} items available in stock"
+            )
+        item.quantity = new_quantity
+    else:
+        if data.quantity > product.stock:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Only {product.stock} items available in stock"
+            )
+        item = Cart(user_id=user["id"], product_id=product_id, quantity=data.quantity)
+        db.add(item)
+
+    db.commit()
+    return create_response(data={"detail": "Cart item quantity updated"})
