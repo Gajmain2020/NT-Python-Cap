@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.products.models import Product
 from fastapi.exceptions import HTTPException
 
-router = APIRouter(tags=["Public Products"])
+router = APIRouter(tags=["Public Routes"])
 
 @router.get('/public_product_health_check')
 def health_check():
@@ -37,8 +37,8 @@ def get_products(
     return products
 
 @router.get("/products/search", response_model=list[ProductResponse])
-def search_products(keyword: str, db: Session = Depends(get_db)):
-    products = db.query(Product).filter(Product.name.ilike(f"%{keyword}%")).all()
+def search_products(search_word: str, db: Session = Depends(get_db)):
+    products = db.query(Product).filter(Product.name.ilike(f"%{search_word}%")).all()
     return products
 
 @router.get("/products/{product_id}", response_model=ProductResponse)

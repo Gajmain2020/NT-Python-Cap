@@ -3,3 +3,23 @@
 2025-06-10 12:38:27,944 - ERROR - HTTPException: Not Found | Status Code: 404 | Path: /public_product_health_check
 2025-06-10 12:47:18,974 - ERROR - HTTPException: Not Found | Status Code: 404 | Path: /products/search/item
 2025-06-10 12:49:01,146 - ERROR - HTTPException: Product not found | Status Code: 404 | Path: /products/10
+2025-06-11 11:08:51,599 - ERROR - HTTPException: Not Found | Status Code: 404 | Path: /cart/
+2025-06-11 11:09:07,371 - ERROR - HTTPException: Not Found | Status Code: 404 | Path: /cart/
+2025-06-11 11:09:20,282 - ERROR - HTTPException: Not Found | Status Code: 404 | Path: /cart
+2025-06-11 11:09:35,727 - ERROR - HTTPException: Not Found | Status Code: 404 | Path: /cart
+2025-06-11 11:09:50,899 - ERROR - HTTPException: Not Found | Status Code: 404 | Path: /cart/cart_health_check
+2025-06-11 11:09:53,264 - ERROR - HTTPException: Not Found | Status Code: 404 | Path: /cart/cart_health_check
+2025-06-11 11:09:57,786 - ERROR - HTTPException: Not Found | Status Code: 404 | Path: /cart/cart_health_check
+2025-06-11 11:11:19,988 - ERROR - HTTPException: Not authenticated | Status Code: 401 | Path: /cart/
+2025-06-11 11:11:53,971 - ERROR - ValidationError on /cart/: [{'type': 'missing', 'loc': ('body',), 'msg': 'Field required', 'input': None}]
+2025-06-11 11:12:03,323 - ERROR - ValidationError on /cart/: [{'type': 'missing', 'loc': ('body', 'product_id'), 'msg': 'Field required', 'input': {}}, {'type': 'missing', 'loc': ('body', 'quantity'), 'msg': 'Field required', 'input': {}}]
+2025-06-11 11:20:10,631 - ERROR - HTTPException: Only 5 items left in stock. | Status Code: 400 | Path: /cart/
+2025-06-11 11:20:25,394 - ERROR - HTTPException: Only 1 items left in stock. | Status Code: 400 | Path: /cart/
+2025-06-11 11:29:47,374 - ERROR - HTTPException: Not Found | Status Code: 404 | Path: /cart/1
+2025-06-11 11:30:46,242 - ERROR - HTTPException: Item not in cart | Status Code: 404 | Path: /cart/1
+2025-06-11 11:34:32,194 - ERROR - HTTPException: Method Not Allowed | Status Code: 405 | Path: /cart/1
+2025-06-11 11:34:35,102 - ERROR - HTTPException: Method Not Allowed | Status Code: 405 | Path: /cart/1
+2025-06-11 11:34:54,556 - ERROR - ValidationError on /cart/1: [{'type': 'missing', 'loc': ('body',), 'msg': 'Field required', 'input': None}]
+2025-06-11 11:35:50,344 - ERROR - ValidationError on /cart/1: [{'type': 'missing', 'loc': ('body', 'quantity'), 'msg': 'Field required', 'input': {}}]
+2025-06-11 11:36:06,624 - ERROR - HTTPException: Item not in cart | Status Code: 404 | Path: /cart/1
+2025-06-11 11:37:52,677 - ERROR - HTTPException: Only 10 items available in stock | Status Code: 400 | Path: /cart/2
