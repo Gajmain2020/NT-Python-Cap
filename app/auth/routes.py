@@ -8,7 +8,7 @@ from app.utils.response import create_response
 from jose import JWTError
 from typing import Optional
 
-router = APIRouter(prefix="/auth", tags=["Auth"])
+router = APIRouter(prefix="/auth", tags=["Auth Routes"])
 
 def get_db():
     db = SessionLocal()
@@ -50,8 +50,8 @@ def signin(payload: LoginSchema, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     if not verify_password(payload.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect password")
-    access_token = create_access_token(data={"sub": user.email, "role": user.role.value})
-    refresh_token = create_refresh_token(data={"sub": user.email, "role": user.role.value})
+    access_token = create_access_token(data={"id":user.id, "email": user.email, "role": user.role.value})
+    refresh_token = create_refresh_token(data={"id":user.id, "email": user.email, "role": user.role.value})
     return create_response(data={"access_token": access_token, "refresh_token": refresh_token})
     
 @router.post("/reset-password")
@@ -66,7 +66,7 @@ def reset_password(
     token = authorization.split(" ")[1]
 
     try:
-        payload_data = verify_token(token)
+        payload_data = verify_token(token,)
         user_email = payload_data.get("sub")
         if not user_email:
             raise HTTPException(status_code=400, detail="Invalid token")
