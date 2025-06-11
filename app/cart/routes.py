@@ -53,7 +53,7 @@ def add_to_cart(data: AddToCart, db: Session = Depends(get_db), user: dict = Dep
     db.commit()
     return create_response(data={"detail": "Item added to cart"})
 
-#GET CART ITEM
+#GET CART ITEMS
 @router.get("/")
 def view_cart(db: Session = Depends(get_db), user: dict = Depends(get_current_user)):
     items = db.query(Cart).filter_by(user_id=user["id"]).all()
@@ -70,3 +70,13 @@ def view_cart(db: Session = Depends(get_db), user: dict = Depends(get_current_us
         for item in items
     ]
     return create_response(data=cart_data)
+
+# Remove from Cart
+@router.delete("/{product_id}")
+def remove_from_cart(product_id: int, db: Session = Depends(get_db), user: dict = Depends(get_current_user)):
+    item = db.query(Cart).filter_by(user_id=user["id"], product_id=product_id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not in cart")
+    db.delete(item)
+    db.commit()
+    return create_response(data={"detail": "Item removed from cart"})
