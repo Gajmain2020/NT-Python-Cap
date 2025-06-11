@@ -5,7 +5,8 @@ from app.core.database import SessionLocal
 from app.products.schemas import ProductCreate, ProductResponse,ProductUpdate
 from app.products.models import Product
 from app.auth.dependencies import require_admin
-router = APIRouter(prefix="/admin", tags=["Admin"])
+
+router = APIRouter(prefix="/admin", tags=["Admin Routes"])
 
 def get_db():
     db = SessionLocal()
