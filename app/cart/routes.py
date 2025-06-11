@@ -52,3 +52,21 @@ def add_to_cart(data: AddToCart, db: Session = Depends(get_db), user: dict = Dep
 
     db.commit()
     return create_response(data={"detail": "Item added to cart"})
+
+#GET CART ITEM
+@router.get("/")
+def view_cart(db: Session = Depends(get_db), user: dict = Depends(get_current_user)):
+    items = db.query(Cart).filter_by(user_id=user["id"]).all()
+    if not items:
+        return create_response(data=[], message="Your cart is empty.")
+
+    cart_data = [
+        {
+            "product_id": item.product_id,
+            "quantity": item.quantity,
+            "product_name": item.product.name,
+            "price": item.product.price
+        }
+        for item in items
+    ]
+    return create_response(data=cart_data)
