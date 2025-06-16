@@ -86,6 +86,10 @@ The API will be available at: [http://localhost:8000](http://localhost:8000)
 
 The API Docs will be availabel at: [http://localhost:8000/docs](http://localhost:8000/docs)
 
+### 6. Postman Collection Link
+
+The Postman API Collection is available at: [Postman Collection](https://gold-desert-234944.postman.co/workspace/CollegeERP~8e611849-971a-4971-a09c-044da526077b/collection/29780692-3b1d639e-35ef-42bc-8ba2-2189ab0529c3?action=share&creator=29780692)
+
 ---
 
 ## Author
